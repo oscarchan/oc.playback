@@ -7,7 +7,7 @@
         <TextView android:id="@+id/clip_instruction" android:width="15pt" android:layout_weight="1"
             android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/select_clips" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="@dimen/line_break_margin"/>
 
-        <TextView android:id="@+id/clip_path" android:editable="true" android:width="15pt"  android:layout_weight="1"
+        <EditText android:id="@+id/clip_path" android:editable="true" android:width="15pt"  android:layout_weight="1"
             android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test" 
             android:textAppearance="?android:attr/textAppearanceLarge"/>
     </LinearLayout>

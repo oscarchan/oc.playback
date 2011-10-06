@@ -11,17 +11,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class OcPlaybackActivity extends Activity  
 {
+	private final class EnterKeyListener implements OnKeyListener {
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			switch(event.getKeyCode()) { 
+				case KeyEvent.KEYCODE_ENTER:
+				{
+					CharSequence dir = videoDirView.getText();
+					Toast.makeText(getApplicationContext(), "video dir: " + dir, Toast.LENGTH_LONG).show();
+					videoDir = new File(dir.toString());
+					refreshFiles();
+					return true;
+				}
+				default:
+				{
+					return false;
+				}
+			}
+		}
+	}
+
 	private int OC_PLAYBACK_CODE = 5;
 	
     /** Called when the activity is first created. */
@@ -31,7 +52,8 @@ public class OcPlaybackActivity extends Activity
 	private File videoDir;
 	
 	private ListView listView;
-
+	private TextView videoDirView;
+	
 	@Override
 	protected void onCreate(Bundle state) 
 	{
@@ -39,15 +61,21 @@ public class OcPlaybackActivity extends Activity
 		setContentView(R.layout.main); 
 		
 		videoDir = Environment.getExternalStoragePublicDirectory("Video");
-		videoNames = listVideos(videoDir);
-		
-		TextView videoDirView = (TextView) this.findViewById(R.id.clip_path);
+		videoDirView = (TextView) this.findViewById(R.id.clip_path);
 		videoDirView.setText(videoDir.getAbsolutePath());
+		videoDirView.setOnKeyListener(new EnterKeyListener());
 		
+
+		refreshFiles();
+		setUpViewButtons();
+	}
+	
+	private void refreshFiles()
+	{
+		videoNames = listVideos(videoDir);
 		listView = (ListView) this.findViewById(R.id.clip_name_list_view);
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, videoNames));
-				
-		setUpViewButtons();
+		
 	}
 	
 	@Override
@@ -111,6 +139,7 @@ public class OcPlaybackActivity extends Activity
 	}
 
 	private String[] listVideos(File videoDir) {
+		
 		String[] videoNames = videoDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String filename) {
@@ -122,6 +151,9 @@ public class OcPlaybackActivity extends Activity
 				return false;
 			}
 		});
+		
+		if(videoNames==null)
+			return new String[0];
 		
 		return videoNames;
 	}
