@@ -3,15 +3,23 @@
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"  android:layout_height="wrap_content">
-        <TextView android:id="@+id/clip_instruction"
-            android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/select_clips" />
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"  android:layout_height="wrap_content" >
+        <TextView android:id="@+id/clip_instruction" android:width="15pt" android:layout_weight="1"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/select_clips" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_marginBottom="@dimen/line_break_margin"/>
 
-        <TextView android:id="@+id/clip_path" android:editable="true" 
-            android:layout_width="fill_parent" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/clip_path" android:editable="true" android:width="15pt"  android:layout_weight="1"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" >
+        <Button android:id="@+id/video_view_selection" android:layout_height="wrap_content" android:background="#88888888" 
+            android:text="VideoView" android:layout_margin="@dimen/button_margin" android:layout_width="0dp" android:layout_weight="1"/>
+        <Button android:id="@+id/media_player_selection" android:layout_height="wrap_content" android:background="#88888888"
+            android:text="MediaPlayer" android:layout_margin="@dimen/button_margin" android:layout_width="0dp" android:layout_weight="1"/>
     </LinearLayout>
 
    
-    <ListView android:id="@+id/clip_name_list_view" android:choiceMode="multipleChoice" android:textFilterEnabled="true"
-        android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <ListView android:id="@+id/clip_name_list_view" android:choiceMode="multipleChoice" android:textFilterEnabled="true" android:layout_weight="8" 
+        android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginBottom="@dimen/line_break_margin"/>
 </LinearLayout>

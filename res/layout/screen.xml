@@ -8,8 +8,8 @@
   <VideoView android:id="@+id/surface_view" 
     android:layout_width="fill_parent" android:layout_height="644dp"/>
 
-   <TextView android:id="@+id/error_msg" android:text="This is a test"
-        android:textSize="15pt"
-        android:gravity="center_horizontal" android:background="#aa0000"
-        android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="13.43"/>  
+<!--    <TextView android:id="@+id/error_msg" android:text="This is a test" -->
+<!--         android:textSize="15pt" -->
+<!--         android:gravity="center_horizontal" android:background="#aa0000" -->
+<!--         android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="13.43"/>   -->
 </LinearLayout>
