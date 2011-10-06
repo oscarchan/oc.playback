@@ -47,7 +47,7 @@ public class OcPlaybackActivity extends Activity
 		listView = (ListView) this.findViewById(R.id.clip_name_list_view);
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, videoNames));
 				
-		setUpViewButton();
+		setUpViewButtons();
 	}
 	
 	@Override
@@ -56,15 +56,15 @@ public class OcPlaybackActivity extends Activity
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if(resultCode==RESULT_OK && data.getExtras()!=null) {
-			int playIndexSelected = data.getExtras().getInt("video.path.index");
+			String selectedVideoPath = data.getExtras().getString(OcPlaybackConstants.VIDEO_SELECTED_PATH);
 			
-			Toast.makeText(getApplicationContext(), "play index selected: " + playIndexSelected, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "video file selected: " + selectedVideoPath, Toast.LENGTH_LONG).show();
 		} else { 
 			Toast.makeText(getApplicationContext(), "child view returned error, cancelled, or missing selected video: result_code=" + resultCode, Toast.LENGTH_LONG).show();
 			
 		}
 	}
-    private void setUpViewButton()
+    private void setUpViewButtons()
     {
         Button viewButton = (Button) this.findViewById(R.id.video_view_selection);
         
@@ -73,11 +73,16 @@ public class OcPlaybackActivity extends Activity
             public void onClick(View v)
             {
             	SparseBooleanArray checkedPositions = listView.getCheckedItemPositions();
-                Intent intent = new Intent(OcPlaybackActivity.this, VideoViewActivity.class);
                 
                 ArrayList<String> videoPaths = getVideoPaths(checkedPositions);
-                intent.putStringArrayListExtra(OcPlaybackConstants.VIDEO_FILE_PATHS, videoPaths);
-                startActivityForResult(intent, OC_PLAYBACK_CODE);
+                
+                if(videoPaths.isEmpty())  {
+                	Toast.makeText(getApplicationContext(), "no videos are selected", Toast.LENGTH_LONG).show();
+                } else { 
+                	Intent intent = new Intent(OcPlaybackActivity.this, VideoViewActivity.class);
+                	intent.putStringArrayListExtra(OcPlaybackConstants.VIDEO_FILE_PATHS, videoPaths);
+                	startActivityForResult(intent, OC_PLAYBACK_CODE);
+                }
             }
         });
         

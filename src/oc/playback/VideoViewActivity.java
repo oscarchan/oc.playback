@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -40,7 +42,18 @@ public class VideoViewActivity extends Activity
 		videoView.setMediaController(new MediaController(this));
 		videoView.setOnCompletionListener(new LoopbackListener());
 		videoView.setOnClickListener(new ClickListener());
-		
+		videoView.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction()==MotionEvent.ACTION_MOVE && event.getX() < 50.0 && event.getY() < 50.0)  
+					return false;
+
+				stopVideo();
+				
+				return true;
+			}
+		});
 		// start
 		playVideo(paths.get(0));
 	}
@@ -48,13 +61,7 @@ public class VideoViewActivity extends Activity
 	private final class ClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			finished = true;
-			videoView.stopPlayback();
-			
-			Intent result = new Intent();
-			result.putExtra(OcPlaybackConstants.VIDEO_SELECTED_PATH, paths.get(playIndex));
-
-			setResult(RESULT_OK, result);
+			stopVideo();
 		}
 	}
 
@@ -71,6 +78,18 @@ public class VideoViewActivity extends Activity
 				playVideo(paths.get(playIndex));
 			}
 		}
+	}
+
+	private void stopVideo() {
+		finished = true;
+		videoView.stopPlayback();
+
+		Intent result = new Intent();
+		result.putExtra(OcPlaybackConstants.VIDEO_SELECTED_PATH,
+				paths.get(playIndex));
+
+		setResult(RESULT_OK, result);
+		finish();
 	}
 
 	private void playVideo(String path)
