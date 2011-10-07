@@ -99,11 +99,11 @@ public class VideoViewActivity extends Activity
 		File movieFile = new File(path);
 			
 		if(movieFile.exists()) {
-			Toast.makeText(getApplicationContext(), "movie does not exist: " + path, Toast.LENGTH_SHORT).show();
 			videoView.setVideoPath(path);
 			videoView.requestFocus();
 			videoView.start();
 				
+			Toast.makeText(getApplicationContext(), "movie is playing: " + path, Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(getApplicationContext(), "movie does not exist: " + path, Toast.LENGTH_LONG).show();
 		}
