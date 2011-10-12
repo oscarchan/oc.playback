@@ -17,6 +17,10 @@
             android:text="VideoView" android:layout_margin="@dimen/button_margin" android:layout_width="0dp" android:layout_weight="1"/>
         <Button android:id="@+id/media_player_selection" android:layout_height="wrap_content" android:background="#88888888"
             android:text="MediaPlayer" android:layout_margin="@dimen/button_margin" android:layout_width="0dp" android:layout_weight="1"/>
+        <CheckBox android:id="@+id/video_looping" android:text="Looping?" android:checked="true" 
+            android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1" ></CheckBox>
+        <CheckBox android:id="@+id/video_control_visible" android:text="control visible?" android:checked="false"
+            android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1" ></CheckBox>
     </LinearLayout>
 
    

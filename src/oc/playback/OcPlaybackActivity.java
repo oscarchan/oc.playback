@@ -17,12 +17,39 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class OcPlaybackActivity extends Activity  
 {
+	private final class PlayVideoListener implements OnClickListener 
+	{
+		Class<? extends Activity> targetActivity;
+		
+		public PlayVideoListener(Class<? extends Activity> targetClass) {
+			this.targetActivity = targetClass;
+		}
+		
+		public void onClick(View v)
+		{
+			SparseBooleanArray checkedPositions = listView.getCheckedItemPositions();
+		    
+		    ArrayList<String> videoPaths = getVideoPaths(checkedPositions);
+		    
+		    if(videoPaths.isEmpty())  {
+		    	Toast.makeText(getApplicationContext(), "no videos are selected", Toast.LENGTH_LONG).show();
+		    } else { 
+		    	Intent intent = new Intent(OcPlaybackActivity.this, targetActivity);
+		    	intent.putExtra(OcPlaybackConstants.VIDEO_LOOPING, videoLoopingView.isChecked());
+		    	intent.putExtra(OcPlaybackConstants.VIDEO_CONTROL_VISIBLE, videoControlVisibleView.isChecked());
+		    	intent.putStringArrayListExtra(OcPlaybackConstants.VIDEO_FILE_PATHS, videoPaths);
+		    	startActivityForResult(intent, OC_PLAYBACK_CODE);
+		    }
+		}
+	}
+
 	private final class EnterKeyListener implements OnKeyListener {
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -53,6 +80,8 @@ public class OcPlaybackActivity extends Activity
 	
 	private ListView listView;
 	private TextView videoDirView;
+	private CheckBox videoLoopingView;
+	private CheckBox videoControlVisibleView;
 	
 	@Override
 	protected void onCreate(Bundle state) 
@@ -60,11 +89,15 @@ public class OcPlaybackActivity extends Activity
 		super.onCreate(state);
 		setContentView(R.layout.main); 
 		
+		listView = (ListView) this.findViewById(R.id.clip_name_list_view);
+
 		videoDir = Environment.getExternalStoragePublicDirectory("Video");
 		videoDirView = (TextView) this.findViewById(R.id.clip_path);
 		videoDirView.setText(videoDir.getAbsolutePath());
 		videoDirView.setOnKeyListener(new EnterKeyListener());
 		
+		videoLoopingView = (CheckBox) this.findViewById(R.id.video_looping);
+		videoControlVisibleView = (CheckBox) this.findViewById(R.id.video_control_visible);
 
 		refreshFiles();
 		setUpViewButtons();
@@ -73,9 +106,7 @@ public class OcPlaybackActivity extends Activity
 	private void refreshFiles()
 	{
 		videoNames = listVideos(videoDir);
-		listView = (ListView) this.findViewById(R.id.clip_name_list_view);
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, videoNames));
-		
 	}
 	
 	@Override
@@ -96,35 +127,11 @@ public class OcPlaybackActivity extends Activity
     {
         Button viewButton = (Button) this.findViewById(R.id.video_view_selection);
         
-        viewButton.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-            	SparseBooleanArray checkedPositions = listView.getCheckedItemPositions();
-                
-                ArrayList<String> videoPaths = getVideoPaths(checkedPositions);
-                
-                if(videoPaths.isEmpty())  {
-                	Toast.makeText(getApplicationContext(), "no videos are selected", Toast.LENGTH_LONG).show();
-                } else { 
-                	Intent intent = new Intent(OcPlaybackActivity.this, VideoViewActivity.class);
-                	intent.putStringArrayListExtra(OcPlaybackConstants.VIDEO_FILE_PATHS, videoPaths);
-                	startActivityForResult(intent, OC_PLAYBACK_CODE);
-                }
-            }
-        });
+        viewButton.setOnClickListener(new PlayVideoListener(VideoViewActivity.class));
         
         viewButton = (Button) this.findViewById(R.id.media_player_selection);
         
-        viewButton.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(OcPlaybackActivity.this, VideoViewActivity.class);
-                startActivity(intent);
-            }
-        });
-        
+        viewButton.setOnClickListener(new PlayVideoListener(MediaPlayerViewActivity.class));
     }
 	
 	
