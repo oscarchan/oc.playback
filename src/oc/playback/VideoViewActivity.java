@@ -2,6 +2,7 @@ package oc.playback;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,6 +33,8 @@ public class VideoViewActivity extends Activity
 	private ArrayList<String> paths;
 	private boolean looping;
 	private boolean controlVisible;
+	
+	private int errorCounts = 0;
 	
 	@Override
 	protected void onCreate(Bundle state) {
@@ -79,10 +82,23 @@ public class VideoViewActivity extends Activity
 
 		@Override
 		public boolean onError(MediaPlayer mp, int what, int extra) {
-			Log.e(TAG, "video error: what=" + what + ": extra=" + extra + ": " + paths.get(playIndex));
-			Toast.makeText(getApplicationContext(), "video error: what=" + what + ": extra=" + extra, Toast.LENGTH_LONG).show();
-			// do nothing, let's see if it continue to play
+			errorCounts++;
+			Log.e(TAG, "video error: count=" + errorCounts + ": what=" + what + ": extra=" + extra + ": " + paths.get(playIndex));
+
+			// replay the server with delay
+			try { 
+				// delay for 0.5 sec
+				Thread.sleep(500);
+			}catch (InterruptedException e) { 
+				// nothing
+			}
 			
+			if(videoView.isPlaying()) { 
+				Log.i(TAG, "onError: stop playing: =" + paths.get(playIndex));
+				videoView.stopPlayback();
+			}
+			
+			playVideo(paths.get(playIndex));
 			return true;
 		}
 	}
