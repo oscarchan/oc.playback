@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent" >
+  android:layout_height="match_parent" 
+  >
 
     <VideoView android:id="@+id/surface_view"
-        android:layout_alignParentLeft="true"  android:layout_alignParentTop="true" layout_
+        android:layout_alignParentLeft="true"  android:layout_alignParentTop="true" 
         android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 
+
+    <TextView android:id="@+id/error_message"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="no error"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+    />
+
     <LinearLayout 
+        android:id="@+id/controller"        
+        android:visibility="invisible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        
+        android:background="@drawable/container"        
         >
     
-        <ImageView android:id="@+id/stop" 
+        <ImageView android:id="@+id/pause" 
             android:layout_height="wrap_content" 
             android:layout_width="wrap_content"                   
             android:src="@drawable/done_inactive"
             />
             
-            
-        <LinearLayout 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/container"
-            android:orientation="horizontal"
-            android:layout_gravity="bottom"
-        >
+
             <TextView android:id="@+id/time_current"
                 android:text="00:00"
                 android:textSize="14sp"
@@ -39,20 +46,20 @@
                 android:typeface="sans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="2px"
                 android:paddingLeft="20dip"
                 android:paddingRight="20dip"
                  />
         
-            <SeekBar android:id="@+id/mediacontroller_progress"
+            <SeekBar android:id="@+id/progress"
                 android:thumb="@drawable/playhead_active"
-                android:thumbOffset="4px"
-                android:layout_height="18px" 
-                android:layout_width="1dip"
+                android:layout_height="wrap_content" 
+                android:layout_width="wrap_content"
                 android:layout_weight="1"
-                android:layout_gravity="center"
-                android:progress="5"
-                
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="3px"
+                android:progress="5"                
                 />
         
         
@@ -62,19 +69,15 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:paddingTop="4dip"
+                android:paddingLeft="4dip" 
                 android:paddingRight="4dip"
-                android:layout_gravity="center"
+                android:layout_marginBottom="2px"
+                android:layout_gravity="center|bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="4dip" />
+                />
         
-        </LinearLayout>
-    
-    
-    </LinearLayout>
 
-<!--    <TextView android:id="@+id/error_msg" android:text="This is a test" -->
-<!--         android:textSize="15pt" -->
-<!--         android:gravity="center_horizontal" android:background="#aa0000" -->
-<!--         android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="13.43"/>   -->
+    </LinearLayout>
+    
 </RelativeLayout>
