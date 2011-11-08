@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:layout_weight="1"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="remote source path" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            
+        <EditText android:id="@+id/src_path" android:editable="true" android:layout_weight="1" 
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ochan@192.168.1.2:~/tmp/rsync" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+              
+              
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:layout_weight="1"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="local destination" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <EditText android:id="@+id/dest_path" android:editable="true" android:layout_weight="1" 
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="/data/tmp/test" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+        <TextView 
+            android:id="@+id/rsync"
+            android:layout_height="wrap_content" 
+            android:layout_width="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="rsync" />
+</LinearLayout>
