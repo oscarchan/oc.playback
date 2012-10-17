@@ -10,7 +10,7 @@
         android:layout_height="wrap_content" 
         android:layout_width="wrap_content"                   
         android:src="@drawable/done_inactive"
-        android:background="#000000" 
+        android:background="#000000"  
         />
         
         
@@ -41,9 +41,8 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:progress="5"
-            
             />
-    
+       
     
         <TextView android:id="@+id/time"
             android:text="99:99"

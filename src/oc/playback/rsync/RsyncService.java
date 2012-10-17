@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.app.Service;
@@ -24,12 +24,8 @@ public class RsyncService extends Service
 {
 	private static final String TAG = "RsyncService";
 	
-	private RsyncTask task;
 	private List<RsyncConfig> configList;
-	
-	private Executor executor;
-	private ArrayList taskList;
-	
+
 	private IBinder binder = new RsyncBinder();
 	
 	@Override
@@ -38,7 +34,7 @@ public class RsyncService extends Service
 		Log.i(TAG, "on start command: instance=" + this);
 		
 		rsync();
-		
+
 		return Service.START_STICKY;
 	}
 	
@@ -60,10 +56,6 @@ public class RsyncService extends Service
 		super.onCreate();
 		
 		configList = RsyncConfigFactory.getRsyncConfig();
-		task = new RsyncTask();
-		
-		executor = Executors.newSingleThreadExecutor();
-		
 	}
 	
 	@Override
@@ -74,8 +66,9 @@ public class RsyncService extends Service
 
 	public void rsync()
 	{
-		task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, configList.toArray(new RsyncConfig[0]));
-		
+//		executor.execute(new RsyncRunable());
+//		task.executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, configList.toArray(new RsyncConfig[0]));
+		new Thread(new RsyncRunable()).start();
 	}
 	
 	// TODO HIGH ochan move to a different thread 
@@ -85,23 +78,16 @@ public class RsyncService extends Service
 	{
 		Log.i(TAG, "rsync(" + config + ")");
 		
-		File destDir = new File(config.getTargetPath());
-		
-		if(destDir.exists()==false) { 
-			destDir.mkdir();
+		if(ensureLocalPathExists(config)) {
+			Log.e(TAG, "unable to ensure local paths: config=" + config);
 		}
 			
-		if( destDir.isDirectory()==false) { 
-			Log.e(TAG, "invalid dest path: " + config.getTargetPath());
-			return;
-		}
-		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		
 		String timestamp = format.format(new Date());
 		String command = String.format(RSYNC_COMMAND_TEMPLATE,
 				config.getCredentialPath(),
-				config.getInclusive(), config.getSourcePath(), config.getTargetPath(),
+				config.getInclusive(), config.getSource(), config.getTarget(),
 				RsyncConstants.RSYNC_LOG_DIR +  "/rsync." + timestamp  +".log");
 	
 		try {
@@ -116,6 +102,35 @@ public class RsyncService extends Service
 		} catch (InterruptedException e) {
 			Log.e(TAG, "rsync: interrupted: cmd=" + command, e );
 		}
+	}
+	
+	private boolean ensureLocalPathExists(RsyncConfig config)
+	{
+		boolean ensured = true;
+		
+		if(config.isTargetRemote()==false)
+			ensured = ensured && ensureLocalPathExists(config.getTargetPath());
+		
+		if(config.isSourceRemote()==false)
+			ensured = ensured && ensureLocalPathExists(config.getSourcePath());
+		
+		return ensured;
+	}
+	
+	private boolean ensureLocalPathExists(String path) 
+	{
+		File dir = new File(path);
+		
+		if(dir.exists()==false) { 
+			dir.mkdirs();
+		}
+			
+		if( dir.isDirectory()==false) { 
+			Log.e(TAG, "invalid dest path: " + path);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private static List<String> execute(String command) throws IOException, InterruptedException

@@ -5,14 +5,18 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,9 +88,8 @@ public class VideoViewActivity extends Activity
 			});			
 		}
 		
-		if(looping) { 
-			videoView.setOnCompletionListener(new LoopbackListener());
-		} 
+		videoView.setOnCompletionListener(new LoopbackListener());
+
 		
 		// start
 		playVideo(paths.get(0));
@@ -135,6 +138,13 @@ public class VideoViewActivity extends Activity
 					playIndex = 0;
 	
 				playVideo(paths.get(playIndex));
+			} else {
+				Intent result = new Intent();
+				result.putExtra(OcPlaybackConstants.VIDEO_SELECTED_PATH,
+						paths.get(playIndex));				
+				setResult(RESULT_OK, result);
+				
+				finish();
 			}
 		}
 	}
@@ -203,6 +213,14 @@ public class VideoViewActivity extends Activity
 			}
 		});
 		
+		final float[] roundedCorners = new float[] { 5, 5, 5, 5, 5, 5, 5, 5 };
+		ShapeDrawable pgDrawable = new ShapeDrawable(new RoundRectShape(roundedCorners, null,null));
+		String MyColor = "#FF00FF";
+		pgDrawable.getPaint().setColor(Color.parseColor(MyColor));
+		ClipDrawable cd = new ClipDrawable(pgDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL);
+		progress.setProgressDrawable(pgDrawable);   
+		progress.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.progress_horizontal));
+
 		progress.setOnSeekBarChangeListener(seekListener);
         progress.setMax(PROGRESS_PRECISION);
 	}

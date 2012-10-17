@@ -16,8 +16,8 @@ public class RsyncConfig
 
 	private String taskName;
 	
-	private String sourcePath;
-	private String destPath;
+	private String source;
+	private String dest;
 	private String inclusive="*.gz";
 	private String hostKeyPath= "/etc/ssh_host_key";
 	private Schedule schedule = Schedule.parse("* */5 * * *");  // every 5 min
@@ -28,8 +28,8 @@ public class RsyncConfig
 	{ 
 		this.taskName = name;
 		
-		sourcePath = getProperty(properties, name, SRC_KEY_SUFFIX);
-		destPath = getProperty(properties, name, DST_KEY_SUFFIX);
+		source = getProperty(properties, name, SRC_KEY_SUFFIX);
+		dest = getProperty(properties, name, DST_KEY_SUFFIX);
 		hostKeyPath = getProperty(properties, name, HOST_KEY_SUFFIX, hostKeyPath);
 		inclusive = getProperty(properties, name, INCLUDE_KEY_SUFFIX);
 		String cron_expr = getProperty(properties, name, CRON_KEY_SUFFIX);
@@ -57,13 +57,13 @@ public class RsyncConfig
 		return this;
 	}
 	
-	public RsyncConfig setSourcePath(String source) {
-		this.sourcePath = source;
+	public RsyncConfig setSource(String source) {
+		this.source = source;
 		return this;
 	}
 	
 	public RsyncConfig setTargetPath(String target) {
-		this.destPath = target;
+		this.dest = target;
 		return this;
 	}
 	
@@ -73,14 +73,50 @@ public class RsyncConfig
 		return inclusive;
 	}
 	
+	public String getSource()
+	{
+		return source;
+	}
+	
+	public boolean isSourceRemote()
+	{
+		return isRemote(dest);
+	}
+	
+	
+	public String getTarget()
+	{
+		return dest;
+	}
+	
+	public boolean isTargetRemote()
+	{
+		return isRemote(dest);
+	}
+
 	public String getSourcePath()
 	{
-		return sourcePath;
+		return getFilePath(source);
+	}
+	
+	private boolean isRemote(String path) {
+		int colonIndex = dest.indexOf(":");  
+		
+		return colonIndex>=0; // // found == remote
 	}
 	
 	public String getTargetPath()
 	{
-		return destPath;
+		return getFilePath(dest);
+	}
+
+	private String getFilePath(String dest) {
+		int colonIndex = dest.indexOf(":");
+		
+		if(colonIndex==-1)
+			return dest;
+		else
+			return dest.substring(colonIndex + 1);
 	}
 
 	public String getCredentialPath() {
@@ -90,8 +126,6 @@ public class RsyncConfig
 	public void setCredentialPath(String credentialPath) {
 		this.hostKeyPath = credentialPath;
 	}
-	
-	
 	
 	public Schedule getSchedule() {
 		return schedule;
@@ -113,8 +147,8 @@ public class RsyncConfig
 	{
 		return "Rcfg[" 
 				+ taskName + ", "
-				+ "src=" + sourcePath + ", "
-				+ "dest=" + destPath + ", "
+				+ "src=" + source + ", "
+				+ "dest=" + dest + ", "
 				+ "key=" + hostKeyPath + ", "
 				+ "sch=" + schedule + ", "
 				+ "]"

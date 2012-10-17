@@ -1,6 +1,7 @@
 package oc.playback;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,7 +92,7 @@ public class OcPlaybackActivity extends Activity
 		
 		listView = (ListView) this.findViewById(R.id.clip_name_list_view);
 
-		videoDir = Environment.getExternalStoragePublicDirectory("Video");
+		videoDir = new File("/sdcard/us.wegeeks.sign.vans/videos"); // Environment.getExternalStoragePublicDirectory("Video");
 		videoDirView = (TextView) this.findViewById(R.id.clip_path);
 		videoDirView.setText(videoDir.getAbsolutePath());
 		videoDirView.setOnKeyListener(new EnterKeyListener());
@@ -147,7 +148,7 @@ public class OcPlaybackActivity extends Activity
 
 	private String[] listVideos(File videoDir) {
 		
-		String[] videoNames = videoDir.list(new FilenameFilter() {
+		FilenameFilter filenameFilter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String filename) {
 				for (String type : SUPPORTED_VIDEO_TYPES) {
@@ -157,7 +158,32 @@ public class OcPlaybackActivity extends Activity
 				
 				return false;
 			}
-		});
+		};
+
+		FileFilter dirFilter = new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname)
+			{
+				return pathname.isDirectory();
+			}
+		};		
+		
+		List<String> videoNameList = new ArrayList<String>();
+		
+		String[] videoNames = videoDir.list(filenameFilter);
+		
+		videoNameList.addAll(Arrays.asList(videoNames));
+//
+//		File[] childDirs = videoDir.listFiles(dirFilter);
+//		
+//		for (File childDir : childDirs) {
+//			String[] names = childDir.list(filenameFilter);
+//			videoNameList.addAll(Arrays.asList(names));
+//		}
+		
+		if(videoNameList.isEmpty()==false)
+			return videoNameList.toArray(new String[0]);
 		
 		if(videoNames==null)
 			return new String[0];

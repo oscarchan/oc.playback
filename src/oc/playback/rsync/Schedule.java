@@ -109,7 +109,7 @@ public class Schedule
 
 	@Override
 	public String toString() {
-		return "schd[" + hour + " " + min + "]";
+		return "schd[" + min + " " + hour + "]";
 	}
 	
 }

@@ -22,16 +22,16 @@
 
     <LinearLayout 
         android:id="@+id/controller"        
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:background="@drawable/container"        
         >
-    
+     
         <ImageView android:id="@+id/pause" 
             android:layout_height="wrap_content" 
             android:layout_width="wrap_content"                   
@@ -59,7 +59,8 @@
                 android:layout_weight="1"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="3px"
-                android:progress="5"                
+                android:progress="5"
+                android:progressDrawable="@drawable/track_fill_paint"
                 />
         
         
